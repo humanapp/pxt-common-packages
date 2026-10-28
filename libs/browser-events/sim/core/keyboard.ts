@@ -71,24 +71,32 @@ namespace pxsim.browserEvents {
         Delete = 46,
     }
 
-    export function onKeyboardEvent(event: KeyboardEvent, pressed: boolean) {
-        const eventValue = getValueForKey(event);
+    /**
+     * Queues the bus events for a key press or release.
+     * @param key the key's name, as in the `key` field of a DOM keyboard event
+     * @param location where the key sits on the keyboard: 1 for the left-hand key and 2 for the
+     *     right-hand key of a pair such as Shift, as in the `location` field of a DOM keyboard
+     *     event
+     * @param pressed true for a press, false for a release
+     */
+    export function onKeyboardInput(key: string, location: number, pressed: boolean) {
+        const eventValue = getValueForKey(key);
 
-        fireEvent(eventValue as Key, pressed);
+        fireEvent(eventValue, pressed);
 
         if (eventValue === Key.Shift) {
-            if (event.location === event.DOM_KEY_LOCATION_LEFT) {
+            if (location === 1) {
                 fireEvent(Key.LeftShift, pressed);
             }
-            else if (event.location === event.DOM_KEY_LOCATION_RIGHT) {
+            else if (location === 2) {
                 fireEvent(Key.RightShift, pressed);
             }
         }
         if (eventValue === Key.Control) {
-            if (event.location === event.DOM_KEY_LOCATION_LEFT) {
+            if (location === 1) {
                 fireEvent(Key.LeftControl, pressed);
             }
-            else if (event.location === event.DOM_KEY_LOCATION_RIGHT) {
+            else if (location === 2) {
                 fireEvent(Key.RightControl, pressed);
             }
         }
@@ -103,8 +111,12 @@ namespace pxsim.browserEvents {
         }
     }
 
-    export function getValueForKey(event: KeyboardEvent) {
-        switch (event.key) {
+    /**
+     * Returns the key code for a key name, as in the `key` field of a DOM keyboard event, or 0
+     * for a key with no code.
+     */
+    export function getValueForKey(key: string): Key {
+        switch (key) {
             case "0":
             case ")":
                 return Key.Zero;
