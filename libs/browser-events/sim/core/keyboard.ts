@@ -72,31 +72,41 @@ namespace pxsim.browserEvents {
     }
 
     /**
+     * Where a key sits on the keyboard, with the values of a DOM keyboard event's `location`
+     * field.
+     */
+    export enum KeyLocation {
+        Standard = 0,
+        Left = 1,
+        Right = 2,
+        Numpad = 3,
+    }
+
+    /**
      * Queues the bus events for a key press or release.
      * @param key the key's name, as in the `key` field of a DOM keyboard event
-     * @param location where the key sits on the keyboard: 1 for the left-hand key and 2 for the
-     *     right-hand key of a pair such as Shift, as in the `location` field of a DOM keyboard
-     *     event
+     * @param location where the key sits on the keyboard, as in the `location` field of a DOM
+     *     keyboard event
      * @param pressed true for a press, false for a release
      */
-    export function onKeyboardInput(key: string, location: number, pressed: boolean) {
+    export function onKeyboardInput(key: string, location: KeyLocation, pressed: boolean) {
         const eventValue = getValueForKey(key);
 
         fireEvent(eventValue, pressed);
 
         if (eventValue === Key.Shift) {
-            if (location === 1) {
+            if (location === KeyLocation.Left) {
                 fireEvent(Key.LeftShift, pressed);
             }
-            else if (location === 2) {
+            else if (location === KeyLocation.Right) {
                 fireEvent(Key.RightShift, pressed);
             }
         }
         if (eventValue === Key.Control) {
-            if (location === 1) {
+            if (location === KeyLocation.Left) {
                 fireEvent(Key.LeftControl, pressed);
             }
-            else if (location === 2) {
+            else if (location === KeyLocation.Right) {
                 fireEvent(Key.RightControl, pressed);
             }
         }
